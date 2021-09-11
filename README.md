@@ -10,9 +10,3 @@
 * [Stack Overvlow Traditional CV](https://stackoverflow.com/cv/pano)
 * [LinkedIn](https://www.linkedin.com/in/pkatsourakis/)
 * [Twitter](https://twitter.com/Panohh)
-
-
-
-
-
-
