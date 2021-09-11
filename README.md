@@ -1,5 +1,5 @@
 # Resume for Panormitis (Pano) Katsourakis
-## Contact Info
+## Contact
 <pano@panokatsourakis.com>
 ## What's Inside
 1. Microsoft Word formatted resume
