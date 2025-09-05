@@ -7,7 +7,5 @@
 ## Links
 * You're already in my GitHub!
 * [Resume PDF Link](https://pkatsourakis.github.io/resume/)
-* [Stack Overflow Developer Story](https://stackoverflow.com/story/pano)
-* [Stack Overvlow Traditional CV](https://stackoverflow.com/cv/pano)
+* [Stack Overflow Profile](https://stackoverflow.com/users/2212598/pkatsourakis)
 * [LinkedIn](https://www.linkedin.com/in/pkatsourakis/)
-* [Twitter](https://twitter.com/Panohh)
