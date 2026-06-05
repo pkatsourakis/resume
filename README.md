@@ -1,6 +1,6 @@
 # Panormitis (Pano) Katsourakis
 
-Shrewsbury, MA 01606 | (617) 800-9094 | <pkatjobs@gmail.com>
+Shrewsbury, MA 01545 | (617) 800-9094 | <pkatjobs@gmail.com>
 
 [LinkedIn](https://www.linkedin.com/in/pkatsourakis/) | [Stack Overflow](https://stackoverflow.com/users/2212598/pkatsourakis) | [Resume PDF](https://pkatsourakis.github.io/resume/)
 
