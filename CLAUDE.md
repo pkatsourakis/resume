@@ -22,6 +22,15 @@ Each Markdown source goes: Markdown -> (pandoc) -> styled HTML -> (headless Chro
 - **CI/CD:** `.github/workflows/build.yml` runs the same pipeline on push to `main` when `README.md`, `cover-letter.md`, `resume.css`, `index.html`, or the workflow itself change, then deploys to GitHub Pages.
 - Published at https://pkatsourakis.github.io/resume/
 
+## Tailored applications (private, not in this repo)
+
+`README.md` and `cover-letter.md` here are the canonical base. Per-role tailoring lives outside the repo, in a private Obsidian vault, so nothing application-specific is ever pushed to public GitHub.
+
+- `./apply.sh <slug> ["Company Name"] ["Role Title"]` scaffolds a dated folder under the vault's `Job Hunting/Applications/`, copies the base Markdown into it, auto-fills the dateline plus Company/Role placeholders in the cover letter, and adds a `notes.md` (status, JD link, salary, tailoring checklist). Edit the copies in Obsidian.
+- `./build.sh --app <slug>` builds that application's Markdown into its own `out/` (PDF + DOCX), reusing `resume.css`. Plain `./build.sh` still builds the repo base into the repo root unchanged.
+- Add `--combined` to either build to also emit `PanoKatsourakis_CoverLetterAndResume.{pdf,docx}`: the cover letter, a hard page break, then the resume, as one file for portals that only allow a single upload.
+- Vault location defaults to `…/Vault/Job Hunting/Applications`; override with the `RESUME_APPLICATIONS_DIR` env var.
+
 ## Generated artifacts, do NOT hand-edit
 
 These are gitignored and produced by the build. Never edit them directly; edit the Markdown source and rebuild:
