@@ -18,7 +18,7 @@ Personal resume repo. Single source of truth is **`README.md`**, which *is* the 
 
 Each Markdown source goes: Markdown -> (pandoc) -> styled HTML -> (headless Chrome) -> PDF, plus Markdown -> (pandoc) -> DOCX.
 
-- **Local:** run `./build.ps1` (PowerShell). Needs `pandoc` (`winget install --id JohnMacFarlane.Pandoc -e`) and Chrome or Edge. Regenerates the resume and cover-letter PDF + DOCX from their Markdown sources.
+- **Local:** run `./build.sh` (bash). Needs `pandoc` and Chrome, Edge, or Chromium. Regenerates the resume and cover-letter PDF + DOCX from their Markdown sources.
 - **CI/CD:** `.github/workflows/build.yml` runs the same pipeline on push to `main` when `README.md`, `cover-letter.md`, `resume.css`, `index.html`, or the workflow itself change, then deploys to GitHub Pages.
 - Published at https://pkatsourakis.github.io/resume/
 
@@ -33,5 +33,5 @@ These are gitignored and produced by the build. Never edit them directly; edit t
 
 ## Working here
 
-- To change the resume or cover letter, edit the Markdown source only. Optionally run `./build.ps1` to preview locally; otherwise CI rebuilds and deploys on push.
+- To change the resume or cover letter, edit the Markdown source only. Optionally run `./build.sh` to preview locally; otherwise CI rebuilds and deploys on push.
 - Keep the Markdown valid so pandoc renders it cleanly. `README.md` doubles as the GitHub repo landing page and the source for PDF/DOCX.
