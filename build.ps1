@@ -1,5 +1,5 @@
-# build.ps1 — regenerate the resume PDF + docx from README.md.
-# Source of truth is README.md; everything else is generated. Run after edits, then commit.
+# build.ps1: regenerate the resume + cover-letter PDFs/docx from their markdown sources.
+# Sources of truth are README.md and cover-letter.md; everything else is generated. Run after edits, then commit.
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
@@ -19,28 +19,34 @@ $browser = @(
 ) | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $browser) { throw "No Chrome/Edge found for PDF printing." }
 
-$pdf = "PanoKatsourakis_EngineerResume.pdf"
-$docx = "PanoKatsourakis_EngineerResume.docx"
-
-# 1. Markdown -> standalone styled HTML
-& $pandoc README.md -o resume.html --standalone --css=resume.css --metadata pagetitle="Pano Katsourakis Resume"
-
-# 2. HTML -> PDF via headless browser.
-# Use a throwaway --user-data-dir so we get a fresh isolated instance even if
-# Chrome/Edge is already running (otherwise the headless call is silently ignored).
-$profileDir = Join-Path $env:TEMP "resume-build-chrome"
-$htmlUrl = "file:///" + ((Resolve-Path resume.html) -replace '\\','/')
-$pdfFull = Join-Path $PSScriptRoot $pdf
-$bArgs = @(
-  "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
-  "--user-data-dir=$profileDir", "--print-to-pdf=$pdfFull", $htmlUrl
+# Each entry is a source markdown file and the basenames of its generated artifacts.
+$docs = @(
+  @{ Md = "README.md";       Html = "resume.html";       Pdf = "PanoKatsourakis_EngineerResume.pdf"; Docx = "PanoKatsourakis_EngineerResume.docx"; Title = "Pano Katsourakis Resume" },
+  @{ Md = "cover-letter.md"; Html = "cover-letter.html"; Pdf = "PanoKatsourakis_CoverLetter.pdf";    Docx = "PanoKatsourakis_CoverLetter.docx";    Title = "Pano Katsourakis Cover Letter" }
 )
-# Start-Process -Wait so we block on the child that actually does the printing
-# (the chrome.exe launcher forks and returns immediately on its own).
-$proc = Start-Process -FilePath $browser -ArgumentList $bArgs -Wait -PassThru -NoNewWindow
-if ($proc.ExitCode -ne 0 -or -not (Test-Path $pdfFull)) { throw "PDF was not produced (browser exit $($proc.ExitCode))." }
 
-# 3. Markdown -> docx (same source, for applications that want Word)
-& $pandoc README.md -o $docx
+$profileDir = Join-Path $env:TEMP "resume-build-chrome"
 
-Write-Host "Built $pdf and $docx from README.md" -ForegroundColor Green
+foreach ($doc in $docs) {
+  # 1. Markdown -> standalone styled HTML
+  & $pandoc $doc.Md -o $doc.Html --standalone --css=resume.css --metadata pagetitle=$doc.Title
+
+  # 2. HTML -> PDF via headless browser.
+  # Use a throwaway --user-data-dir so we get a fresh isolated instance even if
+  # Chrome/Edge is already running (otherwise the headless call is silently ignored).
+  $htmlUrl = "file:///" + ((Resolve-Path $doc.Html) -replace '\\','/')
+  $pdfFull = Join-Path $PSScriptRoot $doc.Pdf
+  $bArgs = @(
+    "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+    "--user-data-dir=$profileDir", "--print-to-pdf=$pdfFull", $htmlUrl
+  )
+  # Start-Process -Wait so we block on the child that actually does the printing
+  # (the chrome.exe launcher forks and returns immediately on its own).
+  $proc = Start-Process -FilePath $browser -ArgumentList $bArgs -Wait -PassThru -NoNewWindow
+  if ($proc.ExitCode -ne 0 -or -not (Test-Path $pdfFull)) { throw "PDF was not produced for $($doc.Md) (browser exit $($proc.ExitCode))." }
+
+  # 3. Markdown -> docx (same source, for applications that want Word)
+  & $pandoc $doc.Md -o $doc.Docx
+
+  Write-Host "Built $($doc.Pdf) and $($doc.Docx) from $($doc.Md)" -ForegroundColor Green
+}

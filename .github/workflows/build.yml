@@ -1,12 +1,13 @@
 name: Build & deploy resume
 
 # Source of truth is README.md; the PDF/docx/html are generated here and
-# deployed to GitHub Pages — they are no longer committed to the repo.
+# deployed to GitHub Pages; they are no longer committed to the repo.
 on:
   push:
     branches: [main]
     paths:
       - README.md
+      - cover-letter.md
       - resume.css
       - index.html
       - .github/workflows/build.yml
@@ -28,6 +29,8 @@ jobs:
     env:
       PDF: PanoKatsourakis_EngineerResume.pdf
       DOCX: PanoKatsourakis_EngineerResume.docx
+      CL_PDF: PanoKatsourakis_CoverLetter.pdf
+      CL_DOCX: PanoKatsourakis_CoverLetter.docx
     steps:
       - uses: actions/checkout@v4
 
@@ -55,11 +58,23 @@ jobs:
           # 3. Markdown -> docx (same source, for applications that want Word)
           pandoc README.md -o "$DOCX"
 
+          # 4. Same three steps for the cover letter, reusing resume.css.
+          pandoc cover-letter.md -o cover-letter.html --standalone --css=resume.css \
+            --metadata pagetitle="Pano Katsourakis Cover Letter"
+          google-chrome \
+            --headless=new --disable-gpu --no-pdf-header-footer \
+            --user-data-dir="$(mktemp -d)" \
+            --print-to-pdf="$PWD/$CL_PDF" \
+            "file://$PWD/cover-letter.html"
+          test -f "$CL_PDF"
+          pandoc cover-letter.md -o "$CL_DOCX"
+
       - name: Assemble site
         run: |
           set -euo pipefail
           mkdir _site
-          cp index.html resume.css resume.html "$PDF" "$DOCX" _site/
+          cp index.html resume.css resume.html "$PDF" "$DOCX" \
+            cover-letter.html "$CL_PDF" "$CL_DOCX" _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
