@@ -1,0 +1,76 @@
+name: Build & deploy resume
+
+# Source of truth is README.md; the PDF/docx/html are generated here and
+# deployed to GitHub Pages — they are no longer committed to the repo.
+on:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - resume.css
+      - index.html
+      - .github/workflows/build.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; cancel in-progress runs for the same ref.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PDF: PanoKatsourakis_EngineerResume.pdf
+      DOCX: PanoKatsourakis_EngineerResume.docx
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      # ubuntu-latest ships Google Chrome preinstalled as `google-chrome`.
+      - name: Build artifacts
+        run: |
+          set -euo pipefail
+
+          # 1. Markdown -> standalone styled HTML
+          pandoc README.md -o resume.html --standalone --css=resume.css \
+            --metadata pagetitle="Pano Katsourakis Resume"
+
+          # 2. HTML -> PDF via headless Chrome. Throwaway profile dir so we get
+          #    a fresh isolated instance even if Chrome is already running.
+          google-chrome \
+            --headless=new --disable-gpu --no-pdf-header-footer \
+            --user-data-dir="$(mktemp -d)" \
+            --print-to-pdf="$PWD/$PDF" \
+            "file://$PWD/resume.html"
+          test -f "$PDF"
+
+          # 3. Markdown -> docx (same source, for applications that want Word)
+          pandoc README.md -o "$DOCX"
+
+      - name: Assemble site
+        run: |
+          set -euo pipefail
+          mkdir _site
+          cp index.html resume.css resume.html "$PDF" "$DOCX" _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

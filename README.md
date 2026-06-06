@@ -2,9 +2,9 @@
 
 Shrewsbury, MA 01545 | (617) 800-9094 | <pkatjobs@gmail.com>
 
-[LinkedIn](https://www.linkedin.com/in/pkatsourakis/) | [Stack Overflow](https://stackoverflow.com/users/2212598/pkatsourakis) | [Resume PDF](https://pkatsourakis.github.io/resume/)
+[LinkedIn](https://www.linkedin.com/in/pkatsourakis/) | [GitHub](https://github.com/pkatsourakis) | [Stack Overflow](https://stackoverflow.com/users/2212598/pkatsourakis) | [Resume PDF](https://pkatsourakis.github.io/resume/) | [Resume DOCX](https://pkatsourakis.github.io/resume/PanoKatsourakis_EngineerResume.docx)
 
-Principal Software Engineer with 12+ years building enterprise platforms across architecture, APIs, infrastructure, and CI/CD. I focus on changes that hold up over time, systems other engineers can run without me, and close work with product and customers.
+Principal Software Engineer with 12+ years building enterprise platforms across architecture, APIs, infrastructure, and CI/CD. I focus on AI-assisted systems that hold up over time, multiply engineering productivity, and ship close to product and customers.
 
 ---
 
